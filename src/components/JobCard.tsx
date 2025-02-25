@@ -1,41 +1,57 @@
 import React from 'react';
+import Link from 'next/link';
 import { Job } from '@/types';
+import { MapPinIcon, CurrencyYenIcon } from '@heroicons/react/24/outline';
 
-export function JobCard({ job }: { job: Job }) {
+interface JobCardProps {
+  job: Job;
+  matchScore?: number;
+}
+
+export const JobCard: React.FC<JobCardProps> = ({ job, matchScore }) => {
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-      <div className="flex items-center space-x-4">
-        <img 
-          src={job.company.logo} 
-          className="w-12 h-12 rounded-full object-cover"
-          alt={job.company.name}
-        />
-        <div>
-          <h3 className="text-lg font-semibold text-gray-900">{job.title}</h3>
-          <p className="text-sm text-gray-600">{job.company.name}</p>
-        </div>
-      </div>
-      
-      <div className="mt-4 space-y-2">
-        <p className="text-gray-700 line-clamp-2">{job.description}</p>
+    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+      <div className="p-6">
+        {matchScore && (
+          <div className="flex items-center justify-end mb-2">
+            <div className="bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-sm font-medium">
+              マッチ度 {matchScore}%
+            </div>
+          </div>
+        )}
         
-        <div className="flex items-center text-gray-700">
-          <span className="font-medium">¥{job.rate.min.toLocaleString()} - ¥{job.rate.max.toLocaleString()}</span>
-          <span className="ml-1 text-sm">/時</span>
-        </div>
+        <h3 className="text-xl font-semibold mb-2">{job.title}</h3>
+        <p className="text-gray-600 mb-4">{job.company}</p>
         
-        <div className="flex items-center text-gray-600">
-          <span className="text-sm">{job.location}</span>
+        <div className="space-y-2 mb-4">
+          <div className="flex items-center text-gray-600">
+            <CurrencyYenIcon className="w-5 h-5 mr-2" />
+            <span>{job.salary}</span>
+          </div>
+          <div className="flex items-center text-gray-600">
+            <MapPinIcon className="w-5 h-5 mr-2" />
+            <span>{job.location}</span>
+          </div>
         </div>
-        
-        <div className="flex flex-wrap gap-2">
-          {job.skills.map(skill => (
-            <span key={skill} className="px-2 py-1 text-sm bg-blue-100 text-blue-800 rounded">
+
+        <div className="flex flex-wrap gap-2 mb-4">
+          {job.skills.map((skill, index) => (
+            <span
+              key={index}
+              className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm"
+            >
               {skill}
             </span>
           ))}
         </div>
+
+        <Link
+          href={`/jobs/${job.id}`}
+          className="block w-full text-center bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
+        >
+          詳細を見る
+        </Link>
       </div>
     </div>
   );
-} 
+}; 

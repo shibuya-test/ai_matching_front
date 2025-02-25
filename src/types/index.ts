@@ -25,22 +25,29 @@ export interface Company {
   id: string;
   name: string;
   description: string;
-  logo: string;
+  industry: string;
+  location: string;
+  employeeCount: string;
+  websiteUrl: string;
 }
 
 export interface Job {
   id: string;
   title: string;
+  company: string;
   description: string;
-  company: Company;
-  rate: {
-    min: number;
-    max: number;
-  };
+  salary: string;
   location: string;
   skills: string[];
-  status: 'open' | 'closed';
-  startDate: string;
-  createdAt: Date;
-  updatedAt: Date;
+  postedAt: string;
+  type: string;
+}
+
+export interface Activity {
+  id: string;
+  type: 'message' | 'notification' | 'application';
+  title: string;
+  description: string;
+  date: string;
+  read: boolean;
 }

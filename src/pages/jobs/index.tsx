@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Job } from '@/types';
 import { JobCard } from '@/components/JobCard';
 import Header from '@/components/Header';
+import Sidebar from '@/components/Sidebar';
 
 const JobsPage: React.FC = () => {
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -11,12 +12,23 @@ const JobsPage: React.FC = () => {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const response = await fetch('/api/jobs');
-        if (!response.ok) {
-          throw new Error('求人情報の取得に失敗しました');
-        }
-        const data = await response.json();
-        setJobs(data);
+        // 開発用のダミーデータ
+        const dummyJobs = [
+          {
+            id: '1',
+            title: 'フルスタックエンジニア',
+            company: '株式会社テクノロジー',
+            description: 'React、Node.js、TypeScriptの経験者募集',
+            salary: '500,000 - 800,000円/月',
+            location: '東京都渋谷区',
+            skills: ['React', 'Node.js', 'TypeScript'],
+            postedAt: '2024-01-20',
+            type: '正社員'
+          },
+          // ... 他の求人データ
+        ];
+        setJobs(dummyJobs);
+        setLoading(false);
       } catch (err) {
         setError(err instanceof Error ? err.message : '求人情報の取得に失敗しました');
       } finally {
@@ -30,11 +42,10 @@ const JobsPage: React.FC = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-100">
-        <Header userType="public" />
-        <div className="container mx-auto px-4 py-8">
-          <div className="text-center py-8 text-gray-600">
-            読み込み中...
-          </div>
+        <Header userType="engineer" />
+        <Sidebar userType="engineer" />
+        <div className="ml-64 p-8">
+          <div className="text-center">読み込み中...</div>
         </div>
       </div>
     );
@@ -43,11 +54,10 @@ const JobsPage: React.FC = () => {
   if (error) {
     return (
       <div className="min-h-screen bg-gray-100">
-        <Header userType="public" />
-        <div className="container mx-auto px-4 py-8">
-          <div className="text-center py-8 text-red-600">
-            {error}
-          </div>
+        <Header userType="engineer" />
+        <Sidebar userType="engineer" />
+        <div className="ml-64 p-8">
+          <div className="text-red-600">{error}</div>
         </div>
       </div>
     );
@@ -55,22 +65,19 @@ const JobsPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <Header userType="public" />
-
-      <main className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-8">求人案件一覧</h1>
-        
-        {jobs.length === 0 ? (
-          <div className="text-center py-8 text-gray-600">
-            現在、募集中の案件はありません。
-          </div>
-        ) : (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {jobs.map((job) => (
-              <JobCard key={job.id} job={job} />
-            ))}
-          </div>
-        )}
+      <Header userType="engineer" />
+      <Sidebar userType="engineer" />
+      <main className="ml-64 p-8">
+        <h1 className="text-2xl font-semibold mb-6">求人情報一覧</h1>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {jobs.map((job) => (
+            <JobCard 
+              key={job.id} 
+              job={job}
+              matchScore={Math.round(Math.random() * 20 + 70)}
+            />
+          ))}
+        </div>
       </main>
     </div>
   );
