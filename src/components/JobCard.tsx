@@ -46,7 +46,7 @@ export const JobCard: React.FC<JobCardProps> = ({ job, matchScore }) => {
         </div>
 
         <Link
-          href={`/jobs/${job.id}`}
+          href={`/engineer/projects/${job.id}`}
           className="block w-full text-center bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
         >
           詳細を見る

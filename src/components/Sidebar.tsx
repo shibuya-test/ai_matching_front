@@ -1,86 +1,100 @@
 import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { 
-  HomeIcon, 
-  BriefcaseIcon, 
-  ChatBubbleLeftRightIcon, 
-  BellIcon,
-  UserIcon 
+import {
+  HomeIcon,
+  BriefcaseIcon,
+  ChatBubbleLeftRightIcon,
+  UserCircleIcon,
+  BuildingOfficeIcon,
+  StarIcon,
+  DocumentTextIcon,
 } from '@heroicons/react/24/outline';
 
 interface SidebarProps {
   userType: 'engineer' | 'company';
 }
 
+const engineerMenuItems = [
+  {
+    path: '/engineer/dashboard',
+    label: 'ダッシュボード',
+    icon: HomeIcon,
+  },
+  {
+    path: '/engineer/projects',
+    label: '案件一覧',
+    icon: BriefcaseIcon,
+  },
+  {
+    path: '/engineer/messages',
+    label: 'メッセージ',
+    icon: ChatBubbleLeftRightIcon,
+  },
+  {
+    path: '/engineer/my-ratings',
+    label: '過去案件の評価',
+    icon: StarIcon,
+  },
+  {
+    path: '/engineer/profile',
+    label: 'プロフィール',
+    icon: UserCircleIcon,
+  },
+];
+
+const companyMenuItems = [
+  {
+    path: '/company/dashboard',
+    label: 'ダッシュボード',
+    icon: HomeIcon,
+  },
+  {
+    path: '/company/projects',
+    label: '案件管理',
+    icon: DocumentTextIcon,
+  },
+  {
+    path: '/company/messages',
+    label: 'メッセージ',
+    icon: ChatBubbleLeftRightIcon,
+  },
+  {
+    path: '/company/profile',
+    label: '企業プロフィール',
+    icon: BuildingOfficeIcon,
+  },
+];
+
 const Sidebar: React.FC<SidebarProps> = ({ userType }) => {
   const router = useRouter();
-  const currentPath = router.pathname;
-
-  const engineerLinks = [
-    { 
-      href: '/engineer/dashboard', 
-      icon: HomeIcon, 
-      text: 'ダッシュボード',
-      badge: 0 
-    },
-    { 
-      href: '/jobs', 
-      icon: BriefcaseIcon, 
-      text: '求人情報',
-      badge: 0 
-    },
-    { 
-      href: '/engineer/messages', 
-      icon: ChatBubbleLeftRightIcon, 
-      text: 'メッセージ',
-      badge: 2 
-    },
-    { 
-      href: '/engineer/notifications', 
-      icon: BellIcon, 
-      text: 'お知らせ',
-      badge: 1 
-    },
-    { 
-      href: '/engineer/profile', 
-      icon: UserIcon, 
-      text: 'プロフィール',
-      badge: 0 
-    }
-  ];
-
-  const links = userType === 'engineer' ? engineerLinks : [];
+  const menuItems = userType === 'engineer' ? engineerMenuItems : companyMenuItems;
 
   return (
-    <div className="w-64 bg-white h-screen shadow-lg fixed left-0 top-16">
-      <nav className="mt-5">
-        <div className="px-4">
-          {links.map((link) => {
-            const isActive = currentPath === link.href;
-            const Icon = link.icon;
-
+    <div className="fixed left-0 top-16 w-64 h-[calc(100vh-64px)] bg-white border-r border-gray-200">
+      <nav className="p-4">
+        <ul className="space-y-2">
+          {menuItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = router.pathname === item.path;
+            
             return (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`flex items-center px-4 py-3 mb-2 rounded-lg transition-colors ${
-                  isActive 
-                    ? 'bg-blue-50 text-blue-600' 
-                    : 'text-gray-600 hover:bg-gray-50'
-                }`}
-              >
-                <Icon className="w-5 h-5 mr-3" />
-                <span className="flex-1">{link.text}</span>
-                {link.badge > 0 && (
-                  <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
-                    {link.badge}
-                  </span>
-                )}
-              </Link>
+              <li key={item.path}>
+                <Link
+                  href={item.path}
+                  className={`flex items-center px-4 py-3 rounded-lg transition-colors ${
+                    isActive
+                      ? 'bg-blue-50 text-blue-600'
+                      : 'text-gray-600 hover:bg-gray-50'
+                  }`}
+                >
+                  <Icon className="w-6 h-6 mr-3" />
+                  <span className="font-medium">{item.label}</span>
+                </Link>
+              </li>
             );
           })}
-        </div>
+        </ul>
       </nav>
     </div>
   );
