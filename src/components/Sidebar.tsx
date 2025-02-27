@@ -1,99 +1,109 @@
 import React from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import {
   HomeIcon,
   BriefcaseIcon,
-  ChatBubbleLeftRightIcon,
-  UserCircleIcon,
-  BuildingOfficeIcon,
+  UsersIcon,
   StarIcon,
-  DocumentTextIcon,
+  ChatBubbleLeftIcon,
+  BuildingOfficeIcon,
+  ClipboardDocumentCheckIcon,
+  ChatBubbleLeftRightIcon,
 } from '@heroicons/react/24/outline';
 
-interface SidebarProps {
-  userType: 'engineer' | 'company';
-}
+type SidebarProps = {
+  userType: 'company' | 'engineer';
+};
 
-const engineerMenuItems = [
+const CompanyMenuItems = [
   {
-    path: '/engineer/dashboard',
     label: 'ダッシュボード',
+    href: '/company/dashboard',
     icon: HomeIcon,
   },
   {
-    path: '/engineer/projects',
-    label: '案件一覧',
+    label: '案件管理',
+    href: '/company/projects',
     icon: BriefcaseIcon,
   },
   {
-    path: '/engineer/messages',
-    label: 'メッセージ',
-    icon: ChatBubbleLeftRightIcon,
+    label: '応募者管理',
+    href: '/company/applications',
+    icon: UsersIcon,
   },
   {
-    path: '/engineer/my-ratings',
-    label: '過去案件の評価',
+    label: 'おすすめエンジニア',
+    href: '/company/matching',
     icon: StarIcon,
   },
   {
-    path: '/engineer/profile',
-    label: 'プロフィール',
-    icon: UserCircleIcon,
+    label: '評価一覧',
+    href: '/company/my-ratings',
+    icon: ClipboardDocumentCheckIcon,
+  },
+  {
+    label: 'メッセージ',
+    href: '/company/messages',
+    icon: ChatBubbleLeftIcon,
+  },
+  {
+    label: '企業プロフィール',
+    href: '/company/profile',
+    icon: BuildingOfficeIcon,
   },
 ];
 
-const companyMenuItems = [
+const EngineerMenuItems = [
   {
-    path: '/company/dashboard',
     label: 'ダッシュボード',
+    href: '/engineer/dashboard',
     icon: HomeIcon,
   },
   {
-    path: '/company/projects',
-    label: '案件管理',
-    icon: DocumentTextIcon,
+    label: '案件検索',
+    href: '/engineer/jobs',
+    icon: BriefcaseIcon,
   },
   {
-    path: '/company/messages',
-    label: 'メッセージ',
+    label: '評価一覧',
+    href: '/engineer/my-ratings',
+    icon: ClipboardDocumentCheckIcon,
+  },
+  {
+    label: 'AIチャット',
+    href: '/engineer/ai-chat',
     icon: ChatBubbleLeftRightIcon,
   },
   {
-    path: '/company/profile',
-    label: '企業プロフィール',
+    label: 'メッセージ',
+    href: '/engineer/messages',
+    icon: ChatBubbleLeftIcon,
+  },
+  {
+    label: 'プロフィール',
+    href: '/engineer/profile',
     icon: BuildingOfficeIcon,
   },
 ];
 
 const Sidebar: React.FC<SidebarProps> = ({ userType }) => {
-  const router = useRouter();
-  const menuItems = userType === 'engineer' ? engineerMenuItems : companyMenuItems;
+  const menuItems = userType === 'company' ? CompanyMenuItems : EngineerMenuItems;
 
   return (
-    <div className="fixed left-0 top-16 w-64 h-[calc(100vh-64px)] bg-white border-r border-gray-200">
+    <div className="fixed left-0 top-16 w-64 h-[calc(100vh-64px)] bg-white border-r border-gray-200 overflow-y-auto">
       <nav className="p-4">
         <ul className="space-y-2">
-          {menuItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = router.pathname === item.path;
-            
-            return (
-              <li key={item.path}>
-                <Link
-                  href={item.path}
-                  className={`flex items-center px-4 py-3 rounded-lg transition-colors ${
-                    isActive
-                      ? 'bg-blue-50 text-blue-600'
-                      : 'text-gray-600 hover:bg-gray-50'
-                  }`}
-                >
-                  <Icon className="w-6 h-6 mr-3" />
-                  <span className="font-medium">{item.label}</span>
-                </Link>
-              </li>
-            );
-          })}
+          {menuItems.map((item) => (
+            <li key={item.href}>
+              <Link
+                href={item.href}
+                className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <item.icon className="w-5 h-5 mr-3" />
+                {item.label}
+              </Link>
+            </li>
+          ))}
         </ul>
       </nav>
     </div>

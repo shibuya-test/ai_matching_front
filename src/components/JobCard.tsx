@@ -1,12 +1,12 @@
 import React from 'react';
 import Link from 'next/link';
+import { CurrencyYenIcon, MapPinIcon } from '@heroicons/react/24/outline';
 import { Job } from '@/types';
-import { MapPinIcon, CurrencyYenIcon } from '@heroicons/react/24/outline';
 
-interface JobCardProps {
+type JobCardProps = {
   job: Job;
   matchScore?: number;
-}
+};
 
 export const JobCard: React.FC<JobCardProps> = ({ job, matchScore }) => {
   return (
@@ -46,7 +46,7 @@ export const JobCard: React.FC<JobCardProps> = ({ job, matchScore }) => {
         </div>
 
         <Link
-          href={`/engineer/projects/${job.id}`}
+          href={`/engineer/jobs/${job.id}`}
           className="block w-full text-center bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
         >
           詳細を見る

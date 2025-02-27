@@ -1,18 +1,14 @@
 import React from 'react';
-import { Rating } from '@/types';
-import { StarIcon, CalendarIcon, BuildingOfficeIcon } from '@heroicons/react/24/solid';
+import { BuildingOfficeIcon, CalendarIcon, StarIcon } from '@heroicons/react/24/solid';
+import { Rating } from '../types';
 
-interface RatingCardProps {
+type RatingCardProps = {
   rating: Rating;
-  onClickDetail: (rating: Rating) => void;
-}
+};
 
-export const RatingCard: React.FC<RatingCardProps> = ({ rating, onClickDetail }) => {
+export const RatingCard: React.FC<RatingCardProps> = ({ rating }) => {
   return (
-    <div 
-      className="bg-white rounded-lg shadow-md p-6 cursor-pointer hover:shadow-lg transition-shadow"
-      onClick={() => onClickDetail(rating)}
-    >
+    <div className="bg-white rounded-lg shadow-md p-6">
       <div className="flex justify-between items-start mb-4">
         <div>
           <h3 className="text-xl font-semibold mb-2">{rating.projectName}</h3>

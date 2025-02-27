@@ -2,9 +2,26 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Header from '@/components/Header';
 import Sidebar from '@/components/Sidebar';
-import { EngineerCard } from '@/components/EngineerCard';
-import { ApplicationStatusCard } from '@/components/ApplicationStatusCard';
-import { Engineer, Application } from '@/types';
+
+// 型定義
+type ApplicationStatuses = {
+  total: number;
+  statuses: {
+    pending: number;
+    interviewing: number;
+    accepted: number;
+    rejected: number;
+  };
+};
+
+type Engineer = {
+  id: string;
+  name: string;
+  skills: string[];
+  experience: number;
+  matchScore: number;
+  availableFrom: string;
+};
 
 // 開発用のダミーデータ
 const DUMMY_DATA = {
@@ -49,7 +66,7 @@ const CompanyDashboard: React.FC = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [applications, setApplications] = useState<Application | null>(null);
+  const [applications, setApplications] = useState<ApplicationStatuses | null>(null);
   const [recommendedEngineers, setRecommendedEngineers] = useState<Engineer[]>([]);
 
   useEffect(() => {
@@ -102,55 +119,69 @@ const CompanyDashboard: React.FC = () => {
     <div className="min-h-screen bg-gray-100">
       <Header userType="company" />
       <Sidebar userType="company" />
-      
       <main className="ml-64 p-8">
         <h1 className="text-2xl font-semibold mb-8">ダッシュボード</h1>
 
-        {/* 応募状況のサマリー */}
-        {applications && (
-          <div className="grid grid-cols-4 gap-6 mb-8">
-            <ApplicationStatusCard
-              title="全応募"
-              count={applications.total}
-              colorClass="bg-blue-500"
-            />
-            <ApplicationStatusCard
-              title="選考中"
-              count={applications.statuses.pending}
-              colorClass="bg-yellow-500"
-            />
-            <ApplicationStatusCard
-              title="面接予定"
-              count={applications.statuses.interviewing}
-              colorClass="bg-green-500"
-            />
-            <ApplicationStatusCard
-              title="選考完了"
-              count={applications.statuses.accepted + applications.statuses.rejected}
-              colorClass="bg-gray-500"
-            />
-          </div>
-        )}
-
-        {/* おすすめエンジニア */}
-        <section className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <h2 className="text-xl font-medium mb-4">おすすめエンジニア</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {recommendedEngineers.map((engineer) => (
-              <EngineerCard
-                key={engineer.id}
-                engineer={engineer}
-                onClick={() => router.push(`/company/engineers/${engineer.id}`)}
-              />
-            ))}
+        {/* 応募状況の概要 */}
+        <section className="mb-12">
+          <h2 className="text-xl font-medium mb-4">応募状況</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="bg-blue-500 text-white rounded-lg p-6">
+              <h3 className="text-lg font-medium">全応募数</h3>
+              <p className="text-3xl font-bold mt-2">{applications?.total || 0}</p>
+            </div>
+            <div className="bg-yellow-500 text-white rounded-lg p-6">
+              <h3 className="text-lg font-medium">書類選考中</h3>
+              <p className="text-3xl font-bold mt-2">{applications?.statuses.pending || 0}</p>
+            </div>
+            <div className="bg-purple-500 text-white rounded-lg p-6">
+              <h3 className="text-lg font-medium">面接調整中</h3>
+              <p className="text-3xl font-bold mt-2">{applications?.statuses.interviewing || 0}</p>
+            </div>
+            <div className="bg-green-500 text-white rounded-lg p-6">
+              <h3 className="text-lg font-medium">内定承諾</h3>
+              <p className="text-3xl font-bold mt-2">{applications?.statuses.accepted || 0}</p>
+            </div>
           </div>
         </section>
 
-        {/* 最近の活動 */}
-        <section className="bg-white rounded-lg shadow-md p-6">
-          <h2 className="text-xl font-medium mb-4">最近の活動</h2>
-          {/* 活動履歴のリスト - 後で実装 */}
-          <p className="text-gray-500">現在の活動はありません</p>
+        {/* おすすめエンジニア */}
+        <section>
+          <h2 className="text-xl font-medium mb-4">おすすめエンジニア</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {recommendedEngineers.map((engineer) => (
+              <div
+                key={engineer.id}
+                className="bg-white rounded-lg shadow-md p-6 cursor-pointer hover:shadow-lg transition-shadow"
+                onClick={() => router.push(`/company/engineers/${engineer.id}`)}
+              >
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h3 className="text-lg font-medium">{engineer.name}</h3>
+                    <p className="text-sm text-gray-500 mt-1">経験年数: {engineer.experience}年</p>
+                  </div>
+                  <div className="bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded">
+                    マッチ度: {engineer.matchScore}%
+                  </div>
+                </div>
+                <div className="mt-4">
+                  <div className="flex flex-wrap gap-2">
+                    {engineer.skills.map((skill) => (
+                      <span
+                        key={skill}
+                        className="bg-gray-100 text-gray-800 text-sm px-2.5 py-0.5 rounded"
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <p className="text-sm text-gray-500 mt-4">
+                  稼働開始可能: {new Date(engineer.availableFrom).toLocaleDateString()}
+                </p>
+              </div>
+            ))}
+          </div>
         </section>
       </main>
     </div>

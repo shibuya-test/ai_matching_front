@@ -1,15 +1,18 @@
 import React from 'react';
 import { Dialog } from '@headlessui/react';
+import { XMarkIcon } from '@heroicons/react/24/outline';
+import { StarIcon, CalendarIcon, BuildingOfficeIcon } from '@heroicons/react/24/solid';
 import { Rating } from '@/types';
-import { StarIcon, CalendarIcon, BuildingOfficeIcon, XMarkIcon } from '@heroicons/react/24/solid';
 
-interface RatingDetailModalProps {
-  rating: Rating;
+type RatingDetailModalProps = {
+  rating: Rating | null;
   isOpen: boolean;
   onClose: () => void;
-}
+};
 
 export const RatingDetailModal: React.FC<RatingDetailModalProps> = ({ rating, isOpen, onClose }) => {
+  if (!rating) return null;
+
   return (
     <Dialog open={isOpen} onClose={onClose} className="relative z-50">
       <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
